@@ -7,7 +7,6 @@ using System;
 
 public class interact : MonoBehaviour
 {
-    GameObject cube;
     Material[] materials = new Material[56];
     public Texture m_MainTexture, m_Normal, m_Metal;
     Vector3 target;
@@ -15,9 +14,6 @@ public class interact : MonoBehaviour
 
     void Start()
     {
-        cube = GameObject.Find("Cube");
-
-        materials[0] = new Material(Shader.Find("Standard"));
         for (int i = 0; i < 54; i++)
         {
             materials[i] = new Material(Shader.Find("Standard"));
@@ -27,9 +23,9 @@ public class interact : MonoBehaviour
     }
     IEnumerator GetTexture(int pictureCounter)
     {
-        UnityWebRequest www = new UnityWebRequest("http://localhost/Res/" + pictureCounter + ".jpg");
-        DownloadHandlerTexture textD = new DownloadHandlerTexture();
-        www.downloadHandler = textD;
+        UnityWebRequest www = new("http://localhost/Res/" + pictureCounter + ".jpg");
+        DownloadHandlerTexture textureDownload = new();
+        www.downloadHandler = new DownloadHandlerTexture();
         yield return www.SendWebRequest();
         if (www.result != UnityWebRequest.Result.Success)
         {
@@ -37,7 +33,7 @@ public class interact : MonoBehaviour
         }
         else
         {
-            materials[pictureCounter].mainTexture = textD.texture;
+            materials[pictureCounter].mainTexture = textureDownload.texture;
         }
     }
     private GameObject[] GenerateSide(GameObject[] cubeSides, float x, float y, float z, float scaleX, float scaleY, float scaleZ)
