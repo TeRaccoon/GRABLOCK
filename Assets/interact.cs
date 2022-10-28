@@ -8,9 +8,7 @@ using System;
 public class interact : MonoBehaviour
 {
     Material[] materials = new Material[56];
-    public Texture m_MainTexture, m_Normal, m_Metal;
     Vector3 target;
-    int globalCount = 0;
 
     void Start()
     {
@@ -23,9 +21,9 @@ public class interact : MonoBehaviour
     }
     IEnumerator GetTexture(int pictureCounter)
     {
-        UnityWebRequest www = new("http://localhost/Res/" + pictureCounter + ".jpg");
+        UnityWebRequest www = new UnityWebRequest("http://localhost/Res/" + pictureCounter + ".jpg");
         DownloadHandlerTexture textureDownload = new();
-        www.downloadHandler = new DownloadHandlerTexture();
+        www.downloadHandler = textureDownload;
         yield return www.SendWebRequest();
         if (www.result != UnityWebRequest.Result.Success)
         {
@@ -36,15 +34,16 @@ public class interact : MonoBehaviour
             materials[pictureCounter].mainTexture = textureDownload.texture;
         }
     }
-    private GameObject[] GenerateSide(GameObject[] cubeSides, float x, float y, float z, float scaleX, float scaleY, float scaleZ)
+    private void GenerateSide(float x, float y, float z, float scaleX, float scaleY, float scaleZ, int materialIndex)
     {
         for (int i = 0; i < 9; i++)
         {
+            GameObject parentCube = GameObject.Find("Cube");
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube1.transform.SetParent(cube.transform);
+            cube1.transform.SetParent(parentCube.transform);
             cube1.transform.position = new Vector3(x, y, z);
             cube1.transform.localScale = new Vector3(scaleX, scaleY, scaleZ);
-            cube1.GetComponent<Renderer>().material = materials[globalCount];
+            cube1.GetComponent<Renderer>().material = materials[materialIndex];
             cube1.GetComponent<BoxCollider>().enabled = true;
             cube1.GetComponent<BoxCollider>().isTrigger = true;
 
@@ -75,27 +74,24 @@ public class interact : MonoBehaviour
                     y += 5;
                 }
             }
-            cubeSides[globalCount] = cube1;
-            globalCount++;
+            materialIndex++;
         }
-        return cubeSides;
     }
     private void GenerateCube()
     {
-        GameObject[] cubeSides = new GameObject[56];
-        GameObject cube = GameObject.Find("Cube");
-
-        cubeSides = GenerateSide(cubeSides, 7.5f, -5, -5, 0.1f, 5, 5);
-        cubeSides = GenerateSide(cubeSides, -7.5f, -5, -5, 0.1f, 5, 5);
-        cubeSides = GenerateSide(cubeSides, -5, 7.5f, -5, 5, 0.1f, 5);
-        cubeSides = GenerateSide(cubeSides, -5, -7.5f, -5, 5, 0.1f, 5);
-        cubeSides = GenerateSide(cubeSides, -5, -5, 7.5f, 5, 5, 0.1f);
-        cubeSides = GenerateSide(cubeSides, -5, -5, -7.5f, 5, 5, 0.1f);
+        GenerateSide(7.5f, -5, -5, 0.1f, 5, 5, 0);
+        GenerateSide(-7.5f, -5, -5, 0.1f, 5, 5, 9);
+        GenerateSide(-5, 7.5f, -5, 5, 0.1f, 5, 18);
+        GenerateSide(-5, -7.5f, -5, 5, 0.1f, 5, 27);
+        GenerateSide(-5, -5, 7.5f, 5, 5, 0.1f, 36);
+        GenerateSide(-5, -5, -7.5f, 5, 5, 0.1f, 45);
     }
 
     //Update is called once per frame
     void Update()
     {
+        GameObject cube = GameObject.Find("Cube");
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             target = new Vector3(-180, 180, 180);
