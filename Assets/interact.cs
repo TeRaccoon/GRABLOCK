@@ -11,6 +11,7 @@ public class interact : MonoBehaviour
     Material[] materials = new Material[56];
     public Texture m_MainTexture, m_Normal, m_Metal;
     Vector3 target;
+    int globalCount = 0;
 
     void Start()
     {
@@ -39,145 +40,61 @@ public class interact : MonoBehaviour
             materials[pictureCounter].mainTexture = textD.texture;
         }
     }
+    private GameObject[] GenerateSide(GameObject[] cubeSides, float x, float y, float z, float scaleX, float scaleY, float scaleZ)
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube1.transform.SetParent(cube.transform);
+            cube1.transform.position = new Vector3(x, y, z);
+            cube1.transform.localScale = new Vector3(scaleX, scaleY, scaleZ);
+            cube1.GetComponent<Renderer>().material = materials[globalCount];
+            cube1.GetComponent<BoxCollider>().enabled = true;
+            cube1.GetComponent<BoxCollider>().isTrigger = true;
+
+            if (x == 7.5f || x == -7.5f)
+            {
+                y += 5;
+                if (y == 10)
+                {
+                    y = -5;
+                    z += 5;
+                }
+            }
+            if (y == 7.5f || y == -7.5f)
+            {
+                z += 5;
+                if (z == 10)
+                {
+                    z = -5;
+                    x += 5;
+                }
+            }
+            if (z == 7.5f || z == -7.5f)
+            {
+                x += 5;
+                if (x == 10)
+                {
+                    x = -5;
+                    y += 5;
+                }
+            }
+            cubeSides[globalCount] = cube1;
+            globalCount++;
+        }
+        return cubeSides;
+    }
     private void GenerateCube()
     {
         GameObject[] cubeSides = new GameObject[56];
         GameObject cube = GameObject.Find("Cube");
-        int globalCount = 0;
 
-        int y = -5;
-        int z = -5;
-        int counter = 0;
-        for (int i = 0; i < 9; i++)
-        {
-            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube1.transform.SetParent(cube.transform);
-            cube1.transform.position = new Vector3(7.5f, y, z);
-            cube1.transform.localScale = new Vector3(0.1f, 5, 5);
-            cube1.GetComponent<Renderer>().material = materials[globalCount];
-            cube1.GetComponent<BoxCollider>().enabled = true;
-            cube1.GetComponent<BoxCollider>().isTrigger = true;
-            cube1.AddComponent<events>();
-            globalCount++;
-            y += 5;
-            if (y == 10)
-            {
-                y = -5;
-                z += 5;
-            }
-            cubeSides[counter] = cube1;
-            counter++;
-        }
-        y = -5;
-        z = -5;
-        for (int i = 0; i < 9; i++)
-        {
-            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube1.transform.SetParent(cube.transform);
-            cube1.transform.position = new Vector3(-7.5f, y, z);
-            cube1.transform.localScale = new Vector3(0.1f, 5, 5);
-            cube1.GetComponent<Renderer>().material = materials[globalCount];
-            cube1.GetComponent<BoxCollider>().enabled = true;
-            cube1.GetComponent<BoxCollider>().isTrigger = true;
-            cube1.AddComponent<events>();
-            globalCount++;
-            y += 5;
-            if (y == 10)
-            {
-                y = -5;
-                z += 5;
-            }
-            cubeSides[counter] = cube1;
-            counter++;
-        }
-        int x = -5;
-        z = -5;
-        for (int i = 0; i < 9; i++)
-        {
-            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube1.transform.SetParent(cube.transform);
-            cube1.transform.position = new Vector3(x, 7.5f, z);
-            cube1.transform.localScale = new Vector3(5, 0.1f, 5);
-            cube1.GetComponent<Renderer>().material = materials[globalCount];
-            cube1.GetComponent<BoxCollider>().enabled = true;
-            cube1.GetComponent<BoxCollider>().isTrigger = true;
-            cube1.AddComponent<events>();
-            globalCount++;
-            z += 5;
-            if (z == 10)
-            {
-                z = -5;
-                x += 5;
-            }
-            cubeSides[counter] = cube1;
-            counter++;
-        }
-        x = -5;
-        z = -5;
-        for (int i = 0; i < 9; i++)
-        {
-            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube1.transform.SetParent(cube.transform);
-            cube1.transform.position = new Vector3(x, -7.5f, z);
-            cube1.transform.localScale = new Vector3(5, 0.1f, 5);
-            cube1.GetComponent<Renderer>().material = materials[globalCount];
-            cube1.GetComponent<BoxCollider>().enabled = true;
-            cube1.GetComponent<BoxCollider>().isTrigger = true;
-            cube1.AddComponent<events>();
-            globalCount++;
-            z += 5;
-            if (z == 10)
-            {
-                z = -5;
-                x += 5;
-            }
-            cubeSides[counter] = cube1;
-            counter++;
-        }
-        x = -5;
-        y = -5;
-        for (int i = 0; i < 9; i++)
-        {
-            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube1.transform.SetParent(cube.transform);
-            cube1.transform.position = new Vector3(x, y, 7.5f);
-            cube1.transform.localScale = new Vector3(5, 5, 0.1f);
-            cube1.GetComponent<Renderer>().material = materials[globalCount];
-            cube1.GetComponent<BoxCollider>().enabled = true;
-            cube1.GetComponent<BoxCollider>().isTrigger = true;
-            cube1.AddComponent<events>();
-            globalCount++;
-            y += 5;
-            if (y == 10)
-            {
-                y = -5;
-                x += 5;
-            }
-            cubeSides[counter] = cube1;
-            counter++;
-        }
-        x = -5;
-        y = -5;
-        for (int i = 0; i < 9; i++)
-        {
-            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube1.transform.SetParent(cube.transform);
-            cube1.transform.position = new Vector3(x, y, -7.5f);
-            cube1.transform.localScale = new Vector3(5, 5, 0.1f);
-            cube1.GetComponent<Renderer>().material = materials[globalCount];
-            cube1.GetComponent<BoxCollider>().enabled = true;
-            cube1.GetComponent<BoxCollider>().isTrigger = true;
-            cube1.AddComponent<events>();
-            globalCount++;
-            x += 5;
-            if (x == 10)
-            {
-                x = -5;
-                y += 5;
-            }
-            cubeSides[counter] = cube1;
-            counter++;
-        }
+        cubeSides = GenerateSide(cubeSides, 7.5f, -5, -5, 0.1f, 5, 5);
+        cubeSides = GenerateSide(cubeSides, -7.5f, -5, -5, 0.1f, 5, 5);
+        cubeSides = GenerateSide(cubeSides, -5, 7.5f, -5, 5, 0.1f, 5);
+        cubeSides = GenerateSide(cubeSides, -5, -7.5f, -5, 5, 0.1f, 5);
+        cubeSides = GenerateSide(cubeSides, -5, -5, 7.5f, 5, 5, 0.1f);
+        cubeSides = GenerateSide(cubeSides, -5, -5, -7.5f, 5, 5, 0.1f);
     }
 
     //Update is called once per frame
